@@ -128,7 +128,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="text-center mt-4">
-          <span className="text-gray-600">Don't have an account? </span>
+          <span className="text-gray-600">{"Don't have an account?"}</span>
           <Button onClick={() => router.push("/register")} variant="text" color="primary">
             Register
           </Button>
