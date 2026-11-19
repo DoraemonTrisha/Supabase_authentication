@@ -18,7 +18,7 @@ export type LoginFormData = {
 };
 
 export type RegisterFormData = {
-  id: number;
+  // id: number;
   firstName: string;
   lastName: string;
   email: string;
