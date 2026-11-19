@@ -23,23 +23,20 @@ const validationSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-// Register function using Supabase
+
 const registerUser = async (data: RegisterFormData) => {
   const { email, password } = data;
-
   const { data: userData, error: authError } = await supabase.auth.signUp({
     email,
     password,
   });
-
   if (authError) {
     throw new Error(authError.message);
   }
-
   if (userData) {
     return userData; 
   }
-
+  //If there is no authentication error but also no returned data, this throws a fallback error.
   throw new Error("Failed to register.");
 };
 
@@ -56,7 +53,7 @@ const Register: React.FC = () => {
   }, [isAuthenticated, router]);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
-    resolver: yupResolver(validationSchema),
+   resolver: yupResolver(validationSchema),
   });
 
   const registerMutation = useMutation({
@@ -65,8 +62,13 @@ const Register: React.FC = () => {
       toast.success("Registration successful!");
       router.push("/login"); 
     },
-    onError: (error: any) => {
-      toast.error(error.message || "An error occurred during registration.");
+    onError: (error: unknown) => {
+      if(error instanceof Error){
+        toast.error(error.message);
+      }else{
+        console.error("An unexpected error occured")
+      }
+      
     },
   });
 
@@ -75,7 +77,8 @@ const Register: React.FC = () => {
   };
 
   if (!isClient) {
-    return null; // Wait until the client is ready
+    return null; 
+    // Wait until the client is ready
   }
 
   return (
