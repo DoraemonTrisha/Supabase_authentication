@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, AppBar, Toolbar, IconButton, Typography, Drawer } from "@mui/material";
 import { Menu as MenuIcon, AccountCircle, ExitToApp } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
@@ -8,9 +8,7 @@ import { useAuth } from "../../context/auth-context";
 const Navbar: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth(); 
-  // Destructure isAuthenticated and logout from the AuthContext
   const router = useRouter();
-
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   const handleLogout = () => {

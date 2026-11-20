@@ -1,4 +1,4 @@
-// src/context/auth-context.tsx
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -13,22 +13,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Create AuthProvider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
     if (token) {
-      setIsAuthenticated(true); // If token exists, user is authenticated
+      setIsAuthenticated(true); 
     } else {
-      setIsAuthenticated(false); // Otherwise, not authenticated
+      setIsAuthenticated(false); 
     }
   }, []);
 
   const login = (token: string) => {
     setIsAuthenticated(true);
-    localStorage.setItem("auth_token", token); // Store the token
-    router.push("/"); // Redirect to home after login
+    localStorage.setItem("auth_token", token); 
+    router.push("/"); 
   };
 
   const logout = () => {
@@ -44,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// Create a custom hook to use the AuthContext
+//custom hook to use the AuthContext
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

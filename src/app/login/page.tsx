@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import supabase from "@/config/supabaseClient";
-import { LoginFormData } from "../types/types"; // Import login type
-import { useAuth } from "@/context/auth-context"; // Import AuthContext
+import { LoginFormData } from "../types/types"; 
+import { useAuth } from "@/context/auth-context"; 
 
-// Validation schema for login
+
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email format").required("Email is required"),
   password: Yup.string().required("Password is required"),
@@ -21,31 +21,27 @@ const validationSchema = Yup.object().shape({
 // Login function using Supabase
 const loginUser = async (data: LoginFormData) => {
   const { email, password } = data;
-
   const { data: sessionData, error: authError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-
   if (authError) {
     throw new Error(authError.message);
   }
-
   if (sessionData?.session) {
-    return sessionData.session; // Return the session data
+    return sessionData.session; 
   }
-
   throw new Error("Failed to authenticate.");
 };
 
 const Login: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  const { isAuthenticated, login } = useAuth(); // Get the authentication state
+  const { isAuthenticated, login } = useAuth(); 
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/"); // Redirect to home if already logged in
+      router.push("/"); 
     }
     setIsClient(true);
   }, [isAuthenticated, router]);
@@ -57,19 +53,25 @@ const Login: React.FC = () => {
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (session) => {
-      localStorage.setItem("auth_token", session.access_token); // Store the token
-      localStorage.setItem("supabase_session", JSON.stringify(session)); // Store the full session
+      localStorage.setItem("auth_token", session.access_token); 
+      localStorage.setItem("supabase_session", JSON.stringify(session));
+       // Store the full session
       toast.success("Login successful!");
-      login(session.access_token); // Use context to update authentication state
-      router.push("/"); // Redirect to home
+      login(session.access_token); 
+      // Use context to update authentication state
+      router.push("/"); 
     },
-    onError: (error: any) => {
-      toast.error(error.message || "An error occurred during login.");
+    onError: (error: unknown) => {
+      if(error instanceof Error){
+        toast.error(error.message);
+      }else{
+        console.error("An unexpected error occured")
+      }
     },
   });
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    loginMutation.mutate(data); // Trigger login mutation
+    loginMutation.mutate(data); 
   };
 
   if (!isClient) {
@@ -126,7 +128,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="text-center mt-4">
-          <span className="text-gray-600">Don't have an account? </span>
+          <span className="text-gray-600">{"Don't have an account?"}</span>
           <Button onClick={() => router.push("/register")} variant="text" color="primary">
             Register
           </Button>
